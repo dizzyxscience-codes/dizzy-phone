@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Dizzy Phone</title>
+</head>
+<body>
+  <div id="root" class="hidden">
+    <div class="phone-shell android-device">
+      <header class="status-bar" role="presentation">
+        <div class="status-left">
+          <span class="punch-hole" aria-hidden="true"></span>
+          <span id="clock" class="status-time">12:00</span>
+        </div>
+        <div class="status-right">
+          <span class="status-net">5G</span>
+          <span class="status-wifi" aria-hidden="true"></span>
+          <span class="status-bat"><span class="bat-fill"></span></span>
+        </div>
+      </header>
+
+      <main id="screen-home" class="screen active">
+        <div class="hero">
+          <p class="greet">Welcome back</p>
+          <h1 id="home-name">Citizen</h1>
+        </div>
+        <div class="app-grid" id="app-grid"></div>
+      </main>
+
+      <main id="screen-dialer" class="screen">
+        <h2 class="title">Phone</h2>
+        <div class="dial-display" id="dial-display"></div>
+        <div class="dial-pad" id="dial-pad"></div>
+        <div class="row-actions">
+          <button type="button" class="btn ghost" id="dial-clear">Clear</button>
+          <button type="button" class="btn primary" id="dial-call">Call</button>
+        </div>
+      </main>
+
+      <main id="screen-contacts" class="screen">
+        <h2 class="title">Contacts</h2>
+        <div class="toolbar">
+          <input type="text" id="contact-search" placeholder="Search…" />
+          <button type="button" class="btn sm primary" id="contact-add-btn">+</button>
+        </div>
+        <ul class="list" id="contact-list"></ul>
+        <div class="panel hidden" id="contact-editor">
+          <h3 id="editor-title">New contact</h3>
+          <input type="text" id="editor-name" placeholder="Name" />
+          <input type="text" id="editor-phone" placeholder="Phone number" />
+          <label class="chk"><input type="checkbox" id="editor-fav" /> Favorite</label>
+          <div class="row-actions">
+            <button type="button" class="btn ghost" id="editor-cancel">Cancel</button>
+            <button type="button" class="btn primary" id="editor-save">Save</button>
+          </div>
+        </div>
+      </main>
+
+      <main id="screen-messages" class="screen">
+        <h2 class="title">Messages</h2>
+        <ul class="list threads" id="thread-list"></ul>
+      </main>
+
+      <main id="screen-thread" class="screen">
+        <div class="thread-head">
+          <button type="button" class="btn icon" id="thread-back">←</button>
+          <span id="thread-title">000</span>
+        </div>
+        <div class="chat" id="chat-messages"></div>
+        <div class="composer">
+          <button type="button" class="btn ghost sm" id="chat-gps" title="Share location">📍</button>
+          <input type="text" id="chat-input" placeholder="Message…" />
+          <button type="button" class="btn primary sm" id="chat-send">Send</button>
+        </div>
+      </main>
+
+      <main id="screen-wallet" class="screen">
+        <h2 class="title">Wallet</h2>
+        <div class="wallet-balances">
+          <div class="balance"><span>Cash</span><strong id="w-cash">$0</strong></div>
+          <div class="balance"><span>Bank</span><strong id="w-bank">$0</strong></div>
+        </div>
+        <div id="transfer-box" class="panel">
+          <h3>Bank transfer</h3>
+          <input type="text" id="tr-phone" placeholder="Recipient phone #" />
+          <input type="number" id="tr-amount" placeholder="Amount" />
+          <button type="button" class="btn primary full" id="tr-send">Send</button>
+        </div>
+      </main>
+
+      <main id="screen-notes" class="screen">
+        <h2 class="title">Notes</h2>
+        <button type="button" class="btn primary sm full-mb" id="note-new">New note</button>
+        <ul class="list" id="note-list"></ul>
+        <div class="panel hidden" id="note-editor">
+          <input type="text" id="note-title" placeholder="Title" />
+          <textarea id="note-body" rows="8" placeholder="Write here…"></textarea>
+          <div class="row-actions">
+            <button type="button" class="btn danger ghost" id="note-del">Delete</button>
+            <button type="button" class="btn primary" id="note-save">Save</button>
+          </div>
+        </div>
+      </main>
+
+      <main id="screen-maps" class="screen">
+        <h2 class="title">Maps</h2>
+        <p class="hint">Drop a waypoint or share your position in Messages.</p>
+        <div class="panel">
+          <button type="button" class="btn primary full" id="maps-here">Waypoint my location</button>
+          <div class="row-actions">
+            <input type="number" id="maps-x" placeholder="X" step="0.01" />
+            <input type="number" id="maps-y" placeholder="Y" step="0.01" />
+          </div>
+          <button type="button" class="btn secondary full" id="maps-go">Set waypoint</button>
+        </div>
+      </main>
+
+      <main id="screen-camera" class="screen">
+        <h2 class="title">Camera</h2>
+        <p class="hint" id="camera-hint">Take a photo and save it to Gallery.</p>
+        <div class="panel camera-panel">
+          <input type="text" id="camera-caption" placeholder="Caption (optional)" maxlength="200" />
+          <button type="button" class="btn primary full" id="camera-shutter">Capture photo</button>
+          <p class="hint mono" id="camera-status"></p>
+        </div>
+      </main>
+
+      <main id="screen-services" class="screen">
+        <h2 class="title">Services</h2>
+        <p class="hint">Open means at least one worker is clocked on for that job.</p>
+        <button type="button" class="btn secondary full" id="services-refresh">Refresh</button>
+        <ul class="list" id="services-list"></ul>
+      </main>
+
+      <main id="screen-service-staff" class="screen">
+        <div class="thread-head">
+          <button type="button" class="btn icon" id="service-staff-back">←</button>
+          <span id="service-staff-title">Staff</span>
+        </div>
+        <p class="hint" id="service-staff-hint">On-duty staff with a phone number.</p>
+        <ul class="list" id="service-staff-list"></ul>
+      </main>
+
+      <main id="screen-mygarage" class="screen">
+        <h2 class="title">My Garage</h2>
+        <p class="hint">Vehicles stored in your garage. Delivery spawns them at that lot (same as qb-garages).</p>
+        <p class="hint mono" id="mygarage-fee"></p>
+        <button type="button" class="btn secondary full" id="mygarage-refresh">Refresh</button>
+        <p class="hint" id="mygarage-status"></p>
+        <ul class="list" id="mygarage-list"></ul>
+      </main>
+
+      <main id="screen-gallery" class="screen">
+        <h2 class="title">Gallery</h2>
+        <div class="panel gallery-import">
+          <input type="url" id="gallery-url-input" placeholder="Paste image URL (https://…)" />
+          <input type="text" id="gallery-url-caption" placeholder="Caption (optional)" maxlength="200" />
+          <button type="button" class="btn secondary full" id="gallery-url-add">Save link to gallery</button>
+        </div>
+        <div id="gallery-grid" class="gallery-grid"></div>
+      </main>
+
+      <main id="screen-settings" class="screen">
+        <h2 class="title">Settings</h2>
+        <div class="panel">
+          <label class="chk"><input type="checkbox" id="set-dark" checked /> Dark glass theme</label>
+          <label>UI scale
+            <input type="range" id="set-scale" min="85" max="115" value="100" />
+          </label>
+          <p class="hint mono" id="set-my-number"></p>
+        </div>
+      </main>
+
+      <main id="screen-appstore" class="screen">
+        <h2 class="title">Dizzy Store</h2>
+        <p class="hint">Download social apps. Installed apps appear on your home screen.</p>
+        <div id="store-list" class="store-list"></div>
+      </main>
+
+      <main id="screen-airdrop" class="screen">
+        <h2 class="title">AirDrop</h2>
+        <p class="hint">Share your phone number with players nearby. They can save you as a contact.</p>
+        <button type="button" class="btn secondary full" id="airdrop-refresh">Scan nearby</button>
+        <ul class="list" id="airdrop-nearby"></ul>
+      </main>
+
+      <main id="screen-social" class="screen">
+        <div class="thread-head">
+          <button type="button" class="btn icon" id="social-back">←</button>
+          <span id="social-title">Social</span>
+        </div>
+        <div class="social-feed" id="social-feed"></div>
+        <div class="composer social-composer">
+          <textarea id="social-input" rows="3" placeholder="Share an update…" maxlength="280"></textarea>
+          <button type="button" class="btn primary sm" id="social-post">Post</button>
+        </div>
+      </main>
+
+      <nav class="dock android-nav" aria-label="App navigation">
+        <button type="button" class="dock-btn" data-go="screen-home" title="Home">
+          <span class="dock-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>
+          <span class="dock-label">Home</span>
+        </button>
+        <button type="button" class="dock-btn" data-go="screen-dialer" title="Phone">
+          <span class="dock-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></span>
+          <span class="dock-label">Phone</span>
+        </button>
+        <button type="button" class="dock-btn" data-go="screen-messages" title="Messages">
+          <span class="dock-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg></span>
+          <span class="dock-label">Msgs</span>
+        </button>
+        <button type="button" class="dock-btn" data-go="screen-contacts" title="Contacts">
+          <span class="dock-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></span>
+          <span class="dock-label">People</span>
+        </button>
+        <div class="gesture-pill" aria-hidden="true"></div>
+      </nav>
+
+      <div id="call-overlay" class="overlay hidden">
+        <div class="call-card">
+          <p class="call-label" id="call-status">Calling…</p>
+          <h2 id="call-peer">000</h2>
+          <div class="row-actions">
+            <button type="button" class="btn secondary hidden" id="call-speaker" aria-pressed="false">Speaker</button>
+            <button type="button" class="btn danger" id="call-hangup">End</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="incoming-overlay" class="overlay hidden">
+        <div class="call-card pulse">
+          <p class="call-label">Incoming call</p>
+          <h2 id="in-name">Unknown</h2>
+          <p class="mono" id="in-phone"></p>
+          <div class="row-actions">
+            <button type="button" class="btn danger" id="in-decline">Decline</button>
+            <button type="button" class="btn success" id="in-accept">Accept</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="airdrop-modal" class="overlay hidden">
+        <div class="call-card">
+          <p class="call-label">AirDrop contact card</p>
+          <h2 id="ad-name">Unknown</h2>
+          <p class="mono" id="ad-phone"></p>
+          <div class="row-actions">
+            <button type="button" class="btn ghost" id="ad-decline">Decline</button>
+            <button type="button" class="btn success" id="ad-save">Save to contacts</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="photo-viewer" class="overlay hidden">
+        <div class="photo-viewer-card">
+          <button type="button" class="btn icon photo-viewer-close" id="pv-close" aria-label="Close">×</button>
+          <img id="pv-img" alt="" />
+          <p class="photo-viewer-cap" id="pv-caption"></p>
+          <p class="meta" id="pv-date"></p>
+          <div class="row-actions">
+            <button type="button" class="btn danger" id="pv-delete">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="camera-cell-overlay" class="camera-cell-overlay hidden" aria-hidden="true">
+    <div class="camera-cell-vignette" aria-hidden="true"></div>
+    <div id="camera-cell-grid" class="camera-cell-grid hidden" aria-hidden="true">
+      <div class="camera-grid-cell"></div>
+      <div class="camera-grid-cell"></div>
+      <div class="camera-grid-cell"></div>
+      <div class="camera-grid-cell"></div>
+      <div class="camera-grid-cell"></div>
+      <div class="camera-grid-cell"></div>
+      <div class="camera-grid-cell"></div>
+      <div class="camera-grid-cell"></div>
+      <div class="camera-grid-cell"></div>
+    </div>
+    <div class="camera-cell-bottom">
+      <p class="camera-cell-hint" id="camera-cell-hint">Photo · Aim with mouse · Scroll to zoom</p>
+      <div class="camera-cell-buttons">
+        <div class="cell-cam-slot cell-cam-slot-left">
+          <button type="button" class="cell-cam-side-btn" id="cell-cam-cancel" title="Close">Close</button>
+        </div>
+        <div class="cell-cam-shutter-wrap">
+          <button type="button" class="cell-cam-shutter" id="cell-cam-shutter" aria-label="Capture photo">
+            <span class="cell-cam-shutter-inner"></span>
+          </button>
+        </div>
+        <div class="cell-cam-slot cell-cam-slot-right">
+          <button type="button" class="cell-cam-side-btn cell-cam-flip-btn hidden" id="cell-cam-flip" title="Flip camera" aria-label="Flip camera">⟲</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
